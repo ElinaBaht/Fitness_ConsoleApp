@@ -1,11 +1,14 @@
 ﻿using System;
 
 
-namespace Fitness.BL.Model
+namespace ConsoleApp.Model
 {
+    /// <summary>
+    /// User
+    /// </summary>
     public class User
     {
-        #region Свойства
+        #region Properties
         /// <summary>
         /// Name
         /// </summary>
@@ -15,7 +18,7 @@ namespace Fitness.BL.Model
         /// Gender
         /// </summary>
 
-        public Gender Gender { get; }
+        public string Gender { get; }
 
         /// <summary>
         /// BirthDate
@@ -47,36 +50,32 @@ namespace Fitness.BL.Model
         /// <param name="height">Height</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        public User(string name,
-                    Gender gender,
-                    DateTime birthDate,
-                    double weight,
-                    double height)
+        public User( string name, string gender, DateTime birthDate, double weight, double height)
         {
-            #region Проверка условий
+            #region Сondition check
             if (string.IsNullOrWhiteSpace(name))
             {
-                throw new ArgumentNullException("Имя пользователя не может быть пустым или  null ", nameof(name));
+                throw new ArgumentNullException("Name of user can not be empty or null", nameof(name));    
             }
 
             if(gender == null)
             {
-                throw new ArgumentNullException("Пол не может быть  null ", nameof(gender));
+                throw new ArgumentNullException("Gender can not be null", nameof(gender));
             }
 
-            if(birthDate < DateTime.Parse("01.01.1900") || birthDate >= DateTime.Now)
+            if (birthDate < DateTime.Parse("01.01.1900") || birthDate >= DateTime.Now)
             {
-                throw new ArgumentException("Невозможная дата рождения", nameof(birthDate));
+                throw new ArgumentException("Impossible date of birth", nameof(birthDate));
             }
 
             if(weight <= 0)
             {
-                throw new ArgumentException("Вес не может быть меньше 0", nameof(weight));
+                throw new ArgumentException("Impossible weight", nameof(weight));
             }
 
             if(height <= 0)
             {
-                throw new ArgumentException("Рост не может быть меньше 0", nameof(height));
+                throw new ArgumentException("Impossible height", nameof(height));
             }
             #endregion
 
@@ -86,7 +85,6 @@ namespace Fitness.BL.Model
             Weight = weight;
             Height = height;
         }
-
         public override string ToString()
         {
             return Name;
