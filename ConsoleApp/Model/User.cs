@@ -4,53 +4,61 @@
 namespace ConsoleApp.Model
 {
     /// <summary>
-    /// User
+    /// User.
     /// </summary>
+
+    [Serializable]
     public class User
     {
         #region Properties
         /// <summary>
-        /// Name
+        /// Name.
         /// </summary>
         public string Name { get; }
 
         /// <summary>
-        /// Gender
+        /// Gender.
         /// </summary>
 
-        public string Gender { get; }
+        public Gender Gender { get; }
 
         /// <summary>
-        /// BirthDate
+        /// BirthDate.
         /// </summary>
 
         public DateTime BirthDate { get; }
 
         /// <summary>
-        /// Weight
+        /// Weight.
         /// </summary>
 
         public double Weight { get; set; }
 
         /// <summary>
-        /// Height
+        /// Height.
         /// </summary>
 
         public double Height { get; set; }
 
+        public double Age { get { return DateTime.Now.Year - BirthDate.Year; } }
+
         #endregion
 
         /// <summary>
-        /// Create a new user
+        /// Create a new user.
         /// </summary>
-        /// <param name="name">Name</param>
-        /// <param name="gender">Gender</param>
-        /// <param name="birthDate">BirthDate</param>
-        /// <param name="weight">Weight</param>
-        /// <param name="height">Height</param>
+        /// <param name="name">Name.</param>
+        /// <param name="gender">Gender.</param>
+        /// <param name="birthDate">BirthDate.</param>
+        /// <param name="weight">Weight.</param>
+        /// <param name="height">Height.</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        public User( string name, string gender, DateTime birthDate, double weight, double height)
+        public User( string name,
+                    Gender gender,
+                    DateTime birthDate,
+                    double weight,
+                    double height)
         {
             #region Сondition check
             if (string.IsNullOrWhiteSpace(name))
@@ -85,9 +93,17 @@ namespace ConsoleApp.Model
             Weight = weight;
             Height = height;
         }
+
+        public User(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentNullException("Name of user can not be empty or null", nameof(name));
+            }
+        }
         public override string ToString()
         {
-            return Name;
+            return Name + " " + Age;
         }
     }
 }
