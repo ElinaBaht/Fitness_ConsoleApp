@@ -12,7 +12,11 @@ namespace ConsoleApp.Controller
         /// <summary>
         /// App user.
         /// </summary>
-        public User User { get; }
+        public List<User> Users { get; }
+
+        public User CurrentUser { get; }
+
+        public bool IsNewUser { get; } = false;
 
         /// <summary>
         /// Creating a new user controller.
@@ -20,12 +24,58 @@ namespace ConsoleApp.Controller
         /// <param name="user"></param>
         /// <exception cref="ArgumentNullException"></exception>
 
-        public UserController(string userName, string genderName, DateTime birthDay, double weight, double height)
+        public UserController(string userName)
         {
-            var gender = new Gender(genderName);
-            User = new User(userName, gender, birthDay, weight, height);
-            
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                throw new ArgumentNullException("Username can not be empty",nameof(userName));
+            }
+
+            Users = GetUsersData();
+
+            CurrentUser = Users.SingleOrDefault(u => u.Name == userName);
+
+            if (CurrentUser == null)
+            {
+                CurrentUser = new User(userName);
+                Users.Add(CurrentUser);
+                IsNewUser = true;
+                Save();
+            }
+ 
         }
+
+        /// <summary>
+        /// To get user data.
+        /// </summary>
+        /// <returns>App user</returns>
+        
+
+        private List<User> GetUsersData()
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
+            {
+                if (formatter.Deserialize(fs) is List<User> users)
+                {
+                    return users;
+                }
+                else
+                {
+                    return new List<User>();
+                }
+            }
+        }
+
+        public void SetNewUserData(string genderName, DateTime birthDay, double weight = 1, double height = 1)
+        {
+            CurrentUser.Gender = new Gender(genderName);
+            CurrentUser.BirthDate = birthDay;
+            CurrentUser.Weight = weight;
+            CurrentUser.Height = height;
+            Save();
+        }
+
         /// <summary>
         /// To save user data.
         /// </summary>
@@ -34,29 +84,11 @@ namespace ConsoleApp.Controller
             BinaryFormatter formatter = new BinaryFormatter();
             using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
             {
-                formatter.Serialize(fs, User);
+                formatter.Serialize(fs, Users);
             }
         }
-        /// <summary>
-        /// To get user data.
-        /// </summary>
-        /// <returns>App user</returns>
-        /// <exception cref="FileLoadException"></exception>
-        public UserController()
-        {
-            BinaryFormatter formatter = new BinaryFormatter();
-            using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
-            {
-                if(formatter.Deserialize(fs) is User user)
-                {
-                    User = user;
-                }
-
-                // TODO: What to do, if the user is not read
-                
-                
-            }
-        }
+        
+       
 
         
     }
